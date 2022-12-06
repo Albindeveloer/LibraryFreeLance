@@ -3,12 +3,16 @@ import Book from "../models/Book.js"
 import Genre from "../models/Genre.js"
 import mongoose from "mongoose";
 import User from "../models/User.js";
+import { createError } from "../utils/error.js";
 
 
 export const createBook = async(req,res,next)=>{
     const newBook = new Book(req.body)
 
     try{
+        //error conditions
+        if(!req.body.title || !req.body.language || !req.body.bookNumber[0].ISBN) return next(createError(404,"enter all required fields"))
+
         const savedBook = await newBook.save()
         res.status(200).json(savedBook)
 
@@ -22,6 +26,9 @@ export const createAuther =async(req,res,next)=>{
     const newAuther = new Auther(req.body);
 
     try{
+        //error 
+        if(!req.body.name) return next(createError(404,"enter required fields"));
+
         const savedAuther =await newAuther.save()
         res.status(200).json(savedAuther);
 
@@ -60,6 +67,9 @@ export const createGenre =async(req,res,next)=>{
     const newGenre = new Genre(req.body);
 
     try{
+        //error
+        if(!req.body.name) return next(createError(404,"enter required fields"));
+
         const savedGenre =await newGenre.save()
         res.status(200).json(savedGenre);
 

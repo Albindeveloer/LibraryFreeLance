@@ -13,19 +13,20 @@ function Sidebar() {
 
   return (
     <React.Fragment>
+      <div>
         {/* Main Sidebar Container */}
   <aside className="main-sidebar sidebar-dark-primary elevation-4">
     {/* Brand Logo */}
     <a className="brand-link">
-      <img src="" className="brand-image img-circle elevation-3" style={{opacity: '.8'}} />
-      <span className="brand-text font-weight-light">AdminLTE 3</span>
+      {/* <img src="" className="brand-image img-circle elevation-3" style={{opacity: '.8'}} /> */}
+      <span className="brand-text font-weight-light">LIBRARY</span>
     </a>
     {/* Sidebar */}
     <div className="sidebar">
       {/* Sidebar user panel (optional) */}
       <div className="user-panel mt-3 pb-3 mb-3 d-flex">
         <div className="image">
-          <img src="" className="img-circle elevation-2" alt="User Image" />
+        <ion-icon name="person"></ion-icon>
         </div>
         <div className="info">
           <span className="d-block text-light">{user.username}</span>
@@ -115,15 +116,24 @@ function Sidebar() {
     </li>
   </ul>
 </li>
-
-         
+    <li className="nav-item">
    <button type="button" className="btn btn-info btn-sm" onClick={handleClick}>Logout</button>
+   </li>   
+
         </ul>
       </nav>
       {/* /.sidebar-menu */}
     </div>
     {/* /.sidebar */}
   </aside>
+
+  {/* Control Sidebar */}
+<aside className="control-sidebar control-sidebar-dark">
+  {/* Control sidebar content goes here */}
+</aside>
+{/* /.control-sidebar */}
+
+  </div>
     </React.Fragment>
   )
 }

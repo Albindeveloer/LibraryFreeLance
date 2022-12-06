@@ -4,12 +4,14 @@ export const bookInputs = [
       label: "Title",
       type: "text",
       placeholder: "The Book Thief",
+      required:"required"
     },
     {
       id: "language",
       label: "Language",
       type: "text",
       placeholder: "English",
+      required:"required"
     },
     {
       id: "description",
@@ -22,6 +24,7 @@ export const bookInputs = [
       label: "ISBN",
       type: "number",
       placeholder: "ISBN No.",
+      required:"required"
     },
     {
       id: "price",

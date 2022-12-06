@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 function NewBook() {
   const [info,setInfo] = useState({})
   const navigate=useNavigate()
+    //error
+    const [error,setError]=useState(null)
 
    // React state to manage selected options
    const [selectedOptions, setSelectedOptions] = useState();
@@ -74,6 +76,7 @@ function NewBook() {
       
     }
     catch(err){
+      setError(err.response.data.message)
       console.log("err",err)
     }
   }
@@ -97,7 +100,7 @@ function NewBook() {
                 </div>
                 <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item"><a href="#">Home</a></li>
+                    <li className="breadcrumb-item">Home</li>
                     <li className="breadcrumb-item active">Create Book</li>
                     </ol>
                 </div>
@@ -115,6 +118,8 @@ function NewBook() {
             <h3 className="card-title">Book</h3>
             <ion-icon name="book-outline"></ion-icon>
           </div>
+         
+          <p className="text-danger" >{error && <span>{error}</span>}</p>
           {/* /.card-header */}
           {/* form start */}
             <div className="card-body">
@@ -125,7 +130,7 @@ function NewBook() {
              {bookInputs.map((input)=>(
                <div className="form-group" key={input.id}>
               <label>{input.label}</label>
-              <input id={input.id} type={input.type} placeholder={input.placeholder} onChange={handleChange} className="form-control" />
+              <input id={input.id} type={input.type} placeholder={input.placeholder} required={input.required} onChange={handleChange} className="form-control" />
             </div>
              ))}
 

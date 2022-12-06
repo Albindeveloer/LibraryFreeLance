@@ -7,6 +7,9 @@ import Sidebar from '../../components/sidebar/Sidebar';
 
 function NewAuthor() {
     const [name, setName] = useState();
+
+    //error
+    const [error,setError]=useState(null)
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
@@ -16,6 +19,7 @@ function NewAuthor() {
       navigate("/books/auther");
     } catch (err) {
         console.log(err)
+        setError(err.response.data.message)
     }
   };
 
@@ -35,9 +39,7 @@ function NewAuthor() {
                 </div>
                 <div className="col-sm-6">
                   <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item">
-                      <a href="#">Home</a>
-                    </li>
+                    <li className="breadcrumb-item">Home</li>
                     <li className="breadcrumb-item active">Create Author</li>
                   </ol>
                 </div>
@@ -55,6 +57,9 @@ function NewAuthor() {
                     <div className="card-header">
                       <h3 className="card-title">Book</h3>
                     </div>
+
+                    <p className="text-danger" >{error && <span>{error}</span>}</p>
+                    
                     {/* /.card-header */}
                     {/* form start */}
                     <div className="card-body">

@@ -22,7 +22,6 @@ function UserBookDatatable({userid,issued}) {
     const [sub,setSub]=useState(false)
    
     useEffect(()=>{
-        
         setPageState(data?.data)
     },[data])
 
@@ -88,16 +87,21 @@ function UserBookDatatable({userid,issued}) {
 
   return (
     <Box sx={{ height: 700, width: '100%', }}>
-      
+      <div>
+        <strong>{(issued === true)?"All Issued Books":""}</strong>
+      </div>
+      {
+        loading?"loading":
       <DataGrid
-        className="datagrid"
-        rows={pageState?pageState:""}
-        columns={(sub === false)?owedColumns.concat(actionColumn):bookNumberColumns.concat(actionColumn2)}
-        pageSize={9}
-        rowsPerPageOptions={[9]}
-        getRowId={(row) => row._id}
-        checkboxSelection
+      className="datagrid"
+      rows={pageState?pageState:""}
+      columns={(sub === false)?owedColumns.concat(actionColumn):bookNumberColumns.concat(actionColumn2)}
+      pageSize={9}
+      rowsPerPageOptions={[9]}
+      getRowId={(row) => row._id}
+      checkboxSelection
       />
+    }
 
 <div>
 

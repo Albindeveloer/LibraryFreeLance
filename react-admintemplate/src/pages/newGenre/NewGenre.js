@@ -8,12 +8,17 @@ function NewGenre() {
   const [name, setName] = useState();
   const navigate = useNavigate();
 
+  //error
+  const [error,setError]=useState(null)
+
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       await axios.post("/books/genre", name);
       navigate("/books/genre");
-    } catch (err) {}
+    } catch (err) {
+      setError(err.response.data.message)
+    }
   };
 
   return (
@@ -32,9 +37,7 @@ function NewGenre() {
                 </div>
                 <div className="col-sm-6">
                   <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item">
-                      <a href="#">Home</a>
-                    </li>
+                    <li className="breadcrumb-item">Home</li>
                     <li className="breadcrumb-item active">Create Genre</li>
                   </ol>
                 </div>
@@ -52,6 +55,9 @@ function NewGenre() {
                     <div className="card-header">
                       <h3 className="card-title">Book</h3>
                     </div>
+
+                    <p className="text-danger" >{error && <span>{error}</span>}</p>
+
                     {/* /.card-header */}
                     {/* form start */}
                     <div className="card-body">

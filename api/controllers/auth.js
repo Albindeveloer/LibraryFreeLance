@@ -14,8 +14,14 @@ export const register = async(req,res,next)=>{
             password:hash
         })
 
+        //error conditions
+        if(!req.body.username || !req.body.email || !req.body.password) return next(createError(404,"enter all required fields"))
+        
+        const user=await User.findOne({ $or: [ {username: req.body.username}, { email: req.body.email } ] });
+        if(user) return next(createError(404,"user already exists"))
+
         await newUser.save();
-        res.status(200).json("user has been creted")
+        res.status(200).json("user has been created")
 
     }catch(err){
         next(err)
@@ -25,6 +31,9 @@ export const register = async(req,res,next)=>{
 export const login=async(req,res,next)=>{
     console.log(req.body.username,req.body.password)
     try{
+
+        //if no name nd pwd
+        if(!req.body.username || !req.body.password) return next(createError(404,"enter UserName and password"))
 
         const user= await User.findOne({username: req.body.username});
         console.log(user)

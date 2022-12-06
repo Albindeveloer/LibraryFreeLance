@@ -117,14 +117,14 @@ function New() {
                               <div className="description-block">
                                 <h5 className="description-header">Auther</h5>
                                 <span className="description-text">
-                                  {bookdata && bookdata[0]?.authors[0].name}
+                                  {bookdata && bookdata[0]?.authors[0]?.name}
                                 </span>
                               </div>
                             </div>
                             <div className="col-sm-4 border-right">
                               <div className="description-block">
                                 <h5 className="description-header">Genre</h5>
-                                {bookdata && bookdata[0]?.genres[0].name}
+                                {bookdata && bookdata[0]?.genres[0]?.name}
                               </div>
                             </div>
                             <div className="col-sm-4">

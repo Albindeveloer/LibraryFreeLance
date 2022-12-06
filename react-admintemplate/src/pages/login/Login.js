@@ -31,7 +31,7 @@ function Login() {
     console.log("res is",res) 
     //admin annel mathram localstorageil keriyathi and home pageillek povam
     console.log("role",res.data.role)
-    if(res.data.role == "admin"){
+    if(res.data.role === "admin"){
       dispatch({type:"LOGIN_SUCCESS", payload: res.data.details});  //only otherDetails store cheyathathi localstoragil isadmin venda
       navigate("/")
 
@@ -46,6 +46,7 @@ function Login() {
 
   }
   console.log("user is",user)
+  console.log("error is",error&&error)
 
   return (
     <React.Fragment>
@@ -85,11 +86,11 @@ function Login() {
             </div>
           </div>
           <div className="col-4">
-            <button type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Sign In</button>
+            <button type="submit" disabled={loading} className="btn btn-primary btn-block" onClick={handleClick}>Sign In</button>
           </div>
         </div>
       </form>
-      <div className="social-auth-links text-center mt-2 mb-3">
+      {/* <div className="social-auth-links text-center mt-2 mb-3">
         <a href="#" className="btn btn-block btn-primary">
           <i className="fab fa-facebook mr-2" /> Sign in using Facebook
         </a>
@@ -102,7 +103,7 @@ function Login() {
       </p>
       <p className="mb-0">
         <a href="register.html" className="text-center">Register a new membership</a>
-      </p>
+      </p> */}
     </div>
   </div>
 </div>

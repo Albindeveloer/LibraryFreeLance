@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 function NewUser() {
     const [info,setInfo]=useState({})
-    const [error,setError]=useState()
+    const [error,setError]=useState(null)
     const navigate=useNavigate()
 
     const handleChange=(e)=>{
@@ -42,7 +42,7 @@ function NewUser() {
                 </div>
                 <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
-                    <li className="breadcrumb-item"><a href="#">Home</a></li>
+                    <li className="breadcrumb-item">Home</li>
                     <li className="breadcrumb-item active">Create User</li>
                     </ol>
                 </div>

@@ -28,7 +28,7 @@ function Datatable({columns,bookRow,bookid}) {
     data: [],
     total: 0,
     page: 1,
-    pageSize: 5
+    pageSize: 10
   })
 
   
