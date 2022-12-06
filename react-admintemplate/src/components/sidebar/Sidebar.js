@@ -54,28 +54,35 @@ function Sidebar() {
 
           <li className="nav-item">
             <Link to="/books" className="nav-link" style={{ textDecoration: "none" }}>
-          <ion-icon name="book-outline" className="nav-icon"></ion-icon>
+          <ion-icon name="book" className="nav-icon"></ion-icon>
                   <p>Books</p>
             </Link>
           </li>
 
           <li className="nav-item">
             <Link to="/books/genre" className="nav-link" style={{ textDecoration: "none" }}>
-          <ion-icon name="book-outline" className="nav-icon"></ion-icon>
+          <ion-icon name="bookmarks" className="nav-icon"></ion-icon>
                   <p>Genres</p>
             </Link>
           </li>
 
           <li className="nav-item">
             <Link to="/books/auther" className="nav-link" style={{ textDecoration: "none" }}>
-          <ion-icon name="book-outline" className="nav-icon"></ion-icon>
+          <ion-icon name="person" className="nav-icon"></ion-icon>
                   <p>Authors</p>
+            </Link>
+          </li>
+
+          <li className="nav-item">
+            <Link to="/books/issued" className="nav-link" style={{ textDecoration: "none" }}>
+            <ion-icon name="checkmark-circle" className="nav-icon"></ion-icon>
+                  <p>Issued Books</p>
             </Link>
           </li>
           
 <li className="nav-item">
   <a className="nav-link">
-    <i className="nav-icon fas fa-tachometer-alt" />
+  <ion-icon name="cog"></ion-icon>
     <p>
       operations
       <i className="right fas fa-angle-left" />
@@ -108,6 +115,8 @@ function Sidebar() {
     </li>
   </ul>
 </li>
+
+         
    <button type="button" className="btn btn-info btn-sm" onClick={handleClick}>Logout</button>
         </ul>
       </nav>

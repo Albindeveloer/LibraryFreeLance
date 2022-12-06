@@ -38,7 +38,7 @@ function NewUser() {
             <div className="container-fluid">
                 <div className="row mb-2">
                 <div className="col-sm-6">
-                    <h1>Create User</h1>
+                    <h1>Create User </h1>
                 </div>
                 <div className="col-sm-6">
                     <ol className="breadcrumb float-sm-right">
@@ -58,6 +58,7 @@ function NewUser() {
         <div className="card card-primary">
           <div className="card-header">
             <h3 className="card-title">User</h3>
+            <ion-icon name="person-add-outline"></ion-icon>
           </div>
             <p className="text-danger" >{error && <span>{error}</span>}</p>
           {/* /.card-header */}

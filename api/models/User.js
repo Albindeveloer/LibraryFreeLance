@@ -20,7 +20,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum : ['user','admin','superAdmin'],
         default: 'user'
-    }
+    },
+    owedBooks:[{
+        bookid:{ type:mongoose.Schema.ObjectId},
+        subBookid:{ type:mongoose.Schema.ObjectId},
+    }],
 },
 {timestamps:true}
 )

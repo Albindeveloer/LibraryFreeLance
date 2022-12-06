@@ -3,6 +3,8 @@ import Datatable from '../../components/datatable/Datatable'
 import Navbar from '../../components/navbar/Navbar'
 import Sidebar from '../../components/sidebar/Sidebar'
 import {Link, useLocation} from "react-router-dom"
+import { owedColumns } from '../../datatablesource'
+import UserBookDatatable from '../../components/datatable/UserBookDatatable'
 
 function List({columns}) {
   const location = useLocation();
@@ -26,7 +28,8 @@ function List({columns}) {
       </div>
           
           {/* right col */}
-            <Datatable columns={columns}/>
+          {(owedColumns === columns)?<UserBookDatatable issued={true}/> : <Datatable columns={columns}/>}  
+          
         </div>
         {/* /.row (main row) */}
       </div>{/* /.container-fluid */}

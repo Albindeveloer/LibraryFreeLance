@@ -4,12 +4,13 @@ import Home from "./pages/home/Home"
 import New from "./pages/new/New";
 import List from "./pages/list/List"
 import NewBook from "./pages/newBook/NewBook";
-import {  authorColumns, Bookcolumns, genreColumns, userColumns } from "./datatablesource";
+import {  authorColumns, Bookcolumns, genreColumns, owedColumns, userColumns } from "./datatablesource";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import NewUser from "./pages/newUser/NewUser";
 import NewGenre from "./pages/newGenre/NewGenre";
 import NewAuthor from "./pages/newAuthor/NewAuthor";
+import ViewUser from "./pages/new/ViewUser";
 function App() {
 
   const ProtectedRoute=({children})=>{
@@ -46,6 +47,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <NewUser/>
+                  </ProtectedRoute>
+                  }
+              />
+              <Route
+                path="new"
+                element={
+                  <ProtectedRoute>
+                    <ViewUser/>
                   </ProtectedRoute>
                   }
               />
@@ -105,6 +114,14 @@ function App() {
                   </ProtectedRoute>
                   }
               />
+            </Route>
+
+            <Route path="books/issued">
+              <Route index element={
+                <ProtectedRoute>
+                  <List columns={owedColumns}/>
+                </ProtectedRoute>
+                  } />
             </Route>
             <Route path="*" element={ <Home/> } />
 

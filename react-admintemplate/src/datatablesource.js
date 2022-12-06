@@ -189,3 +189,17 @@ export const columns = [
       width: 200,
     },
   ]
+
+
+  export const owedColumns=[
+    {
+      field: "_id",
+      headerName: "ID",
+      width: 100,
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 200,
+    },
+  ]

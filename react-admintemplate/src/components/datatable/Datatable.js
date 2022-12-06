@@ -42,7 +42,7 @@ function Datatable({columns,bookRow,bookid}) {
       //to fetch data
       const fetchData = async () => {
       setPageState(old => ({ ...old, isLoading: true }))
-      const res= await axios.get(`${path}?page=${pageState.page}&limit=${pageState.pageSize}`);    // can't use hooks in other hook ,so we diidn't use UseFectch
+      const res= await axios.get(`${path}?page=${pageState.page}&limit=${pageState.pageSize}`);    // can't use hooks in other hook ,so we didn't use UseFectch
      
       console.log("server pgintion dt",res.data.data)
       setPageState(old => ({ ...old, isLoading: false, data: res.data.data, total: res.data.total }))
@@ -77,6 +77,26 @@ function Datatable({columns,bookRow,bookid}) {
     setOpenModal(true)
     setSubBookId(id)
     setAvailable(available)
+  }
+
+  //common search for books and user only
+  const handleSearch=async(e,columns)=>{
+    const name={"name": e.target.value}
+    if(e.target.value !== ""){
+      let data=null;
+      if(columns === Bookcolumns){
+
+         data = await axios.post("/books/searchByName",name)
+      }
+      else{
+         data = await axios.post("/users/searchByName",name)
+      }
+      console.log("search data",data&&data)
+     // setPageState({ data: data?.data })
+      setPageState(old => ({ ...old, isLoading: false, data:data.data}))
+  
+      console.log("now ppa",pageState)
+    }
   }
 
   const actionColumn = [
@@ -121,7 +141,25 @@ function Datatable({columns,bookRow,bookid}) {
       width: 200,
       renderCell: (params) => {
         return (
+          <div className="btn btn-danger m-3" onClick={()=>{handleDelete(params.row._id,columns)}} >Delete</div>
+        );
+      },
+    },
+  ];
+
+  const actionColumnUsers = [
+    {
+      field: "action",
+      headerName: "Action",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
               <div className="btn btn-danger m-3" onClick={()=>{handleDelete(params.row._id,columns)}} >Delete</div>
+              <Link to={`/${firstPath}/new`} state={{ id: params.row._id ,user : params.row.username}} style={{ textDecoration: "none" }}>
+              <div className="btn btn-primary m-3" >View</div>
+              </Link>
+          </div>
         );
       },
     },
@@ -131,11 +169,15 @@ function Datatable({columns,bookRow,bookid}) {
 
     <Box sx={{ height: 700, width: '100%', }}>
       
+      {(columns === Bookcolumns || userColumns ) ? <input type="searchbox" onChange={(e)=>{handleSearch(e,columns)}}></input> : ""}
+      
       <DataGrid
         rows={pageState.data?pageState.data:""}
         rowCount={pageState.total&&pageState.total}
         loading={pageState.isLoading}
-        columns={(columns === Bookcolumns)?columns.concat(actionColumn):(columns === bookNumberColumns)?columns.concat(actionColumn2):columns.concat(actionColumn3)}
+        columns={(columns === Bookcolumns)?columns.concat(actionColumn):(columns === bookNumberColumns)?
+          columns.concat(actionColumn2):(columns === userColumns)?
+          columns.concat(actionColumnUsers):columns.concat(actionColumn3)}
         getRowId={(row) => row._id}
         pagination
         page={pageState.page - 1}

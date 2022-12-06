@@ -113,6 +113,7 @@ function NewBook() {
         <div className="card card-primary">
           <div className="card-header">
             <h3 className="card-title">Book</h3>
+            <ion-icon name="book-outline"></ion-icon>
           </div>
           {/* /.card-header */}
           {/* form start */}

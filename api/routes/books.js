@@ -1,5 +1,5 @@
 import express  from "express";
-import { addBook, createAuther, createBook, createGenre, deleteAuther, deleteBook, deleteGener, deleteSubbook, getAuthers, getBook, getBookByField, getBooks, getGenres, getSubBook, issueBook, returnBook, updateBook } from "../controllers/book.js";
+import { addBook, createAuther, createBook, createGenre, deleteAuther, deleteBook, deleteGener, deleteSubbook, getAuthers, getBook, getBookByField, getBooks, getGenres, getIssuedBooks, getIssuedSubBooks, getSearchBook, getSubBook, issueBook, returnBook, updateBook } from "../controllers/book.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 
  const router =express.Router();
@@ -33,9 +33,19 @@ router.get("/find/:id",getBook)
 
 router.get("/byfield/book/:id",getBookByField)
 
+//get book byName
+router.post("/searchByName",getSearchBook)
+
 
 //issue book
 router.put("/:subbookid/:bookid",issueBook)
 router.put("/return/:subbookid/:bookid", verifyAdmin, returnBook)
+
+//get all issued book only, not subbooks(can tke by its avilability or issue field)
+router.get("/issuedBooks",getIssuedBooks)
+
+//get booknumber of select issuedBook
+router.get("/find/issuedSubBooks/:bookid",getIssuedSubBooks)
+
 
  export default router

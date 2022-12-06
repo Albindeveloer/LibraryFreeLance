@@ -2,6 +2,7 @@ import Auther from "../models/Auther.js"
 import Book from "../models/Book.js"
 import Genre from "../models/Genre.js"
 import mongoose from "mongoose";
+import User from "../models/User.js";
 
 
 export const createBook = async(req,res,next)=>{
@@ -245,6 +246,7 @@ export const getBookByField= async(req,res,next)=>{
 
 export const issueBook= async(req,res,next)=>{
     console.log("body is",req.body)
+    const owedbook=[{"bookid":req.params.bookid,"subBookid":req.params.subbookid}]
     try{
        const issuedbook = await Book.updateOne({_id:req.params.bookid, "bookNumber._id":req.params.subbookid },{
             $set: {
@@ -254,6 +256,7 @@ export const issueBook= async(req,res,next)=>{
             }
            },
            {new:true})
+           
            res.status(200).json(issuedbook)
     }catch(err){
         next(err)
@@ -324,3 +327,132 @@ export const getSubBook = async(req,res,next)=>{
         next(err)
     }
 }
+
+
+export const getSearchBook=async(req,res,next)=>{
+    console.log(req.body)
+    try{
+        const books = await Book.aggregate([
+            {
+                $match:{"title" : {$regex : req.body.name}}
+            },
+            {
+                $lookup: {
+                  from: "genres",
+                  localField: "genre",
+                  foreignField: "_id",
+                  as: "genres",
+                },
+            },
+            {
+                $lookup: {
+                  from: "authers",
+                  localField: "author",
+                  foreignField: "_id",
+                  as: "authors",
+                },
+            },
+            {
+                $project: {
+                  title: 1,
+                  language: 1,
+                  description:1,
+                  featured:1,
+                  genres:"$genres",
+                  authors: "$authors",
+                  bookNumber:1,
+                },
+              },
+
+        ])
+
+        res.status(200).json(books)
+   }
+
+   catch(err){
+    next(err)
+   }
+}
+
+//get issued books not subbooks
+export const getIssuedBooks= async(req,res,next)=>{
+
+    let { page, limit } = req.query
+    if (!page) page = 1
+    if (!limit) limit = 10
+    page = parseInt(page)
+    limit = parseInt(limit)
+    try{
+        const issuedBooks= await Book.aggregate([
+            
+            {
+                $match:{"bookNumber.available" : {$eq: false}}
+            },
+           {
+            $project:{
+                author:0,
+                genre:0,
+                description:0,
+                bookNumber:0
+            }
+           }
+        ])
+        
+        
+
+        res.status(200).json({data: issuedBooks.slice((page - 1) * limit, page * limit),
+            total: issuedBooks.length                                                               // to get limited data
+    })
+    }
+    catch(err){
+        next(err)
+    }
+
+}
+
+//get selected issued subbooks 
+export const getIssuedSubBooks= async(req,res,next)=>{
+    var bookid = mongoose.Types.ObjectId(req.params.bookid);
+    let { page, limit } = req.query
+    if (!page) page = 1
+    if (!limit) limit = 10
+    page = parseInt(page)
+    limit = parseInt(limit)
+    try{
+        const issuedSubBooks= await Book.aggregate([
+            
+            {
+                $match:{
+                    "_id":bookid,
+                    "bookNumber.available" : {$eq: false}}
+            },
+           {                                                                          //filter booknumber to return only userid === issueid object
+            '$set':{
+                data:{
+                    '$filter':{
+                        input:'$bookNumber',
+                        as:'item',
+                        cond:{ '$eq': [ '$$item.available',false]}
+                    }
+                }
+            }
+           },
+           {
+            $project:{
+                title:1,
+                data:1
+            }
+           }
+        ])
+        
+        
+
+        res.status(200).json({data: issuedSubBooks.slice((page - 1) * limit, page * limit),
+            total: issuedSubBooks.length                                                               // to get limited data
+    })
+    }
+    
+    catch(err){
+        next(err)
+    }
+} 
