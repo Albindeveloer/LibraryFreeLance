@@ -344,7 +344,7 @@ export const getSearchBook=async(req,res,next)=>{
     try{
         const books = await Book.aggregate([
             {
-                $match:{"title" : {$regex : req.body.name}}
+                $match:{"title" : {$regex : req.body.name, '$options' : 'i'}}   //Contains string : case insensitive search,  '$options' : 'i' it peform this operation
             },
             {
                 $lookup: {

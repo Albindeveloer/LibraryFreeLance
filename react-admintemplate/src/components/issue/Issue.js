@@ -7,6 +7,9 @@ import UseFetch from "../../hooks/UseFetch";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from 'react-toastify';   //for toast
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -22,10 +25,13 @@ const style = {
 };
 
 
-function Issue({ open,bookid,subBookId,available}) {
+function Issue({ open,bookid,subBookId,available,currentTab,userid}) {
+  console.log("currentTab is",currentTab&&currentTab)
   const [dbUsers,setDbUsers]=useState()
   const [selectedOptions, setSelectedOptions] = useState();
   const [startDate, setStartDate] = useState(new Date());
+  
+  const navigate = useNavigate();
   
 
   console.log("tart date ",startDate)
@@ -75,19 +81,53 @@ function Issue({ open,bookid,subBookId,available}) {
         dueDate : startDate
       }
       
-      await axios.put(`/books/${subBookId}/${bookid}`,issueBook)
-      open(false)
-      window.location.reload();
+      axios.put(`/books/${subBookId}/${bookid}`,issueBook).then((response) =>{
+        console.log(response)
+        toast("booked!");
+          open(false)
+          navigate("/books/new",  {
+            state: {
+              id: bookid,
+              reload:true                          //to refecth data in new.js, if issued a book
+            }
+          } )
+    })
     }
     catch(err){
 console.log(err)
     }
   }
 
+
+  //complicted when return diidfernt tabs
   const handleReturn= async(e)=>{
     try{
       await axios.put(`/books/return/${subBookId}/${bookid}`)
-      window.location.reload();
+      toast("returned well!");
+      open(false)
+      {
+        (currentTab==="issuedBookTab")?
+        navigate("/books/issued",{
+          state: {
+            reload:true                          //to refecth data in new.js, if issued a book
+          }
+        }):
+        (currentTab==="userTab")?
+        navigate("/users/new",  {
+          state: {
+            id: userid,
+            reload:true                          //to refecth data in new.js, if issued a book
+          }
+        } ):
+        navigate("/books/new",  {
+          state: {
+            id: bookid,
+            reload:true                          //to refecth data in new.js, if issued a book
+          }
+        } )
+
+      }
+      
     }catch(err)
     {
       console.log(err)
@@ -96,6 +136,7 @@ console.log(err)
 
   return (
     <React.Fragment>
+      <ToastContainer />
       <Modal
         disableEnforceFocus
         open={true}
@@ -125,7 +166,7 @@ console.log(err)
           </Box>
           :
           <Box sx={style}>
-          <i class="ionicons ion-close" onClick={() => open(false)}></i>
+          <i className="ionicons ion-close" onClick={() => open(false)}></i>
           <Typography id="modal-modal-title" variant="h6" component="h2">
           <div className="form-group">
            <b><h5>borrowed by :</h5> {details && details[0].items[1]}</b><br/>

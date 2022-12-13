@@ -10,6 +10,7 @@ function List({columns}) {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
     console.log("loc",path)
+    
   return (
     <React.Fragment>
         <div className="wrapper">
@@ -28,6 +29,7 @@ function List({columns}) {
       </div>
           
           {/* right col */}
+          {/* UserTble here iss issuedbooks tab */}
           {(owedColumns === columns)?<UserBookDatatable issued={true}/> : <Datatable columns={columns}/>}  
           
         </div>

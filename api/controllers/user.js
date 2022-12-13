@@ -1,6 +1,7 @@
 import User from "../models/User.js"
 import mongoose from "mongoose";
 import Book from "../models/Book.js";
+import { createError } from "../utils/error.js";
 
 export const getUsers=async(req,res,next)=>{
     let { page, limit } = req.query
@@ -135,7 +136,7 @@ export const getSearchUser=async(req,res,next)=>{
         //limited data properties bcz of owedbooks have other API
         const users=await User.aggregate([
             {
-                $match:{"username" : {$regex : req.body.name}}
+                $match:{"username" : {$regex : req.body.name, '$options' : 'i'}}  //constins string : case insensitive operation
                 
             },
             {
@@ -149,5 +150,30 @@ export const getSearchUser=async(req,res,next)=>{
         res.status(200).json(users);
     }catch(err){
         next(err)
+    }
+}
+
+//edit user
+export const updateUser = async(req,res,next)=>{
+    try{
+        const updateUser= await User.findByIdAndUpdate(
+            req.params.id,
+            {$set : req.body},
+            {new: true},
+        )
+        res.status(200).json(updateUser)
+
+    }
+    catch(err){
+        if (err) {
+            //duplicte key error
+            if (err.name === 'MongoServerError' && err.code === 11000) {
+              // Duplicate username
+              return res.status(422).json({ succes: false, message: 'User already exist!' });
+            }
+      
+            // Some other error
+            next(err)
+          }
     }
 }

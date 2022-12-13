@@ -7,6 +7,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import { bookNumberColumns } from "../../datatablesource";
 import { subBookInputs } from "../../formsource";
 import UseFetch from "../../hooks/UseFetch";
+import { ToastContainer, toast } from 'react-toastify';   //for toast  , issue commponentil toast functionn call cheyand athivide varumbo render ayikolum
 
 function New() {
   const [bookdata, setBookdata] = useState({});
@@ -21,9 +22,13 @@ function New() {
   console.log("data is", data && data[0]);
 
   useEffect(()=>{
+    if(location.state.reload){
+      reFetch()
+      location.state.reload=false   //prevent indefinte loading
+    }
       setBookdata(data)
    
-  },[data])
+  },[data,location])
   console.log("bookdata",bookdata && bookdata[0])
   const handleChange = (e) => {
     setInfo({ ...info, [e.target.id]: e.target.value });
@@ -56,6 +61,7 @@ function New() {
               <div className="row mb-2">
                 <div className="col-sm-6">
                   <h1>Sub Books</h1>
+                  <ToastContainer/>
                 </div>
                 <div className="col-sm-6">
                   <ol className="breadcrumb float-sm-right">
@@ -176,7 +182,7 @@ function New() {
 
               <div>
                 <div>
-                <button className="btn btn-tool" onClick={()=>{setOpenModal(true)}}>
+                <button className="btn btn-tool" onClick={()=>{setOpenModal(!openModal)}}>
                   <ion-icon name="book-outline" size="large"></ion-icon>
                 </button>
                 </div>

@@ -7,6 +7,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Bookcolumns, bookNumberColumns, columns, userColumns } from '../../datatablesource';
 import UseFetch from '../../hooks/UseFetch';
 import Issue from '../issue/Issue';
+import { confirmAlert } from 'react-confirm-alert'; // Import react confirmation box 😎
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 
 
@@ -14,6 +16,7 @@ function Datatable({columns,bookRow,bookid}) {
   const [openModal,setOpenModal]=useState(false)
   const [subBookId,setSubBookId]=useState()
   const [available,setAvailable]=useState()
+  const [currentTab,setCurrentTab]=useState("");
 
   const location = useLocation();
   const path = location.pathname;      // used for delete operaions avoid complexity in integrating all routes in one datatable
@@ -21,6 +24,7 @@ function Datatable({columns,bookRow,bookid}) {
   console.log("location is now", path)
   console.log("firstPath is now", firstPath)
   console.log("rebookrow",bookRow)
+ 
 
   //for server side pagination in mui datagrid 
   const [pageState, setPageState] = useState({
@@ -36,7 +40,7 @@ function Datatable({columns,bookRow,bookid}) {
   useEffect(()=>{
     if(bookRow){
 
-        setPageState(old => ({ ...old, isLoading: false, data: bookRow }))
+        setPageState(old => ({ ...old, isLoading: false, data: bookRow, total: bookRow?.length }))
       }
       else{
       //to fetch data
@@ -44,7 +48,7 @@ function Datatable({columns,bookRow,bookid}) {
       setPageState(old => ({ ...old, isLoading: true }))
       const res= await axios.get(`${path}?page=${pageState.page}&limit=${pageState.pageSize}`);    // can't use hooks in other hook ,so we didn't use UseFectch
      
-      console.log("server pgintion dt",res.data.data)
+      console.log("server pgintion dt",res.data)
       setPageState(old => ({ ...old, isLoading: false, data: res.data.data, total: res.data.total }))
 
     }
@@ -52,6 +56,8 @@ function Datatable({columns,bookRow,bookid}) {
     }
   },[path,bookRow,pageState.page, pageState.pageSize])
 
+
+  //delete opertion
   const handleDelete=async(id,columns)=>{
     try{
       if(columns === bookNumberColumns){
@@ -64,19 +70,40 @@ function Datatable({columns,bookRow,bookid}) {
         await axios.delete(`${path}/${id}`)   //   urls like /books/auther/6083652639
       }
       console.log("*****pd*********",pageState.data)
-      setPageState(old => ({...old,  data: pageState.data.filter((item) => item._id !== id) , total: pageState.data?.total}) );
+      setPageState(old => ({...old,  data: pageState.data.filter((item) => item._id !== id) , total: pageState.data?.length-1}) );
      
     }catch(err){
       console.log(err)
     }
   }
+// delete before confirmtion
+  const submit = (id,columns) => {
 
-  const handleIssueClick=(id,available)=>{
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Are you sure to do this.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleDelete(id,columns)
+        },
+        {
+          label: 'No',
+          //onClick: () => alert('Click No')
+        }
+      ]
+    });
+  }
+
+
+  //only for book tab return function , not for users and issued boook tab
+  const handleIssueClick=(id,available,)=>{
     console.log("subid is",id)
     console.log("bookid is",bookid)
     setOpenModal(true)
     setSubBookId(id)
     setAvailable(available)
+    setCurrentTab("bookTab")
   }
 
   //common search for books and user only
@@ -125,7 +152,7 @@ function Datatable({columns,bookRow,bookid}) {
         let myVariable = (params.row.available===true) ? "info" : "secondary"
         return (
           <div>
-              <div className="btn btn-danger m-3" onClick={()=>{handleDelete(params.row._id,columns)}} >Delete</div>
+              <div className="btn btn-danger m-3" onClick={()=>{submit(params.row._id,columns)}} >Delete</div>
               <div className={`btn btn-${myVariable} `}   onClick={()=>{handleIssueClick(params.row._id,params.row.available)}} > Issue</div>
               </div>
              
@@ -141,7 +168,7 @@ function Datatable({columns,bookRow,bookid}) {
       width: 200,
       renderCell: (params) => {
         return (
-          <div className="btn btn-danger m-3" onClick={()=>{handleDelete(params.row._id,columns)}} >Delete</div>
+          <div className="btn btn-danger m-3" onClick={()=>{submit(params.row._id,columns)}} >Delete</div>
         );
       },
     },
@@ -155,7 +182,7 @@ function Datatable({columns,bookRow,bookid}) {
       renderCell: (params) => {
         return (
           <div>
-              <div className="btn btn-danger m-3" onClick={()=>{handleDelete(params.row._id,columns)}} >Delete</div>
+              <div className="btn btn-danger m-3" onClick={()=>{submit(params.row._id,columns)}} >Delete</div>
               <Link to={`/${firstPath}/new`} state={{ id: params.row._id ,user : params.row.username}} style={{ textDecoration: "none" }}>
               <div className="btn btn-primary m-3" >View</div>
               </Link>
@@ -169,7 +196,7 @@ function Datatable({columns,bookRow,bookid}) {
 
     <Box sx={{ height: 700, width: '100%', }}>
       
-      {(columns === Bookcolumns || userColumns ) ? <input type="searchbox" onChange={(e)=>{handleSearch(e,columns)}}></input> : ""}
+      {(columns === Bookcolumns || columns === userColumns ) ? <input type="searchbox" onChange={(e)=>{handleSearch(e,columns)}}></input> : ""}
       
       <DataGrid
         rows={pageState.data?pageState.data:""}
@@ -197,7 +224,7 @@ function Datatable({columns,bookRow,bookid}) {
  
 <div>
 
- {openModal && <Issue open={setOpenModal} bookid={bookid} subBookId={subBookId} available={available}/>}
+ {openModal && <Issue open={setOpenModal} bookid={bookid} subBookId={subBookId} available={available} currentTab={currentTab}/>}
 </div>
 
     </Box>
